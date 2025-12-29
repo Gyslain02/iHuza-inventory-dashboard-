@@ -1,6 +1,5 @@
-
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { GlobalProvider } from "./context/GlobalContext";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
@@ -17,10 +16,11 @@ export default function App() {
     <GlobalProvider>
       <Router>
         <Routes>
-        
+         
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          
           <Route
             path="/*"
             element={
@@ -30,14 +30,23 @@ export default function App() {
                   <div className="flex flex-col grow overflow-y-auto">
                     <Header />
                     <Routes>
+                     
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/products" element={<Products />} />
                       <Route path="/categories" element={<Categories />} />
-                      <Route path="/users" element={
-                        <ProtectedRoute adminOnly={true}>
-                          <Users />
-                        </ProtectedRoute>
-                      } />
+
+                     
+                      <Route
+                        path="/users"
+                        element={
+                          <ProtectedRoute adminOnly={true}>
+                            <Users />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      
+                      <Route path="*" element={<Navigate to="/dashboard" />} />
                     </Routes>
                   </div>
                 </div>
