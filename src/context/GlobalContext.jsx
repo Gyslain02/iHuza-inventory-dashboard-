@@ -42,7 +42,7 @@ export const GlobalProvider = ({ children }) => {
 
   
   const addUser = (user) => {
-    const newUser = { ...user, id: uuidv4(), role: "user" }; // ensure normal users
+    const newUser = { ...user, id: uuidv4(), role: "user" }; 
     setUsers((prev) => [...prev, newUser]);
   };
 
