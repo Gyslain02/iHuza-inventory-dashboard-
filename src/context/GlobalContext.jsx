@@ -4,14 +4,18 @@ import { v4 as uuidv4 } from "uuid";
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
- 
-  const [darkMode, setDarkMode] = useState(() => {
-    return JSON.parse(localStorage.getItem("darkMode")) || false;
-  });
+  // =====================
+  // THEME STATE
+  // =====================
+  const [darkMode, setDarkMode] = useState(
+    JSON.parse(localStorage.getItem("darkMode")) || false
+  );
 
-  
-  const [users, setUsers] = useState(() => {
-    return JSON.parse(localStorage.getItem("users")) || [
+  // =====================
+  // USERS STATE
+  // =====================
+  const [users, setUsers] = useState(
+    JSON.parse(localStorage.getItem("users")) || [
       {
         id: uuidv4(),
         name: "Admin User",
@@ -20,29 +24,45 @@ export const GlobalProvider = ({ children }) => {
         status: "Active",
         password: "admin123",
       },
-    ];
-  });
+    ]
+  );
 
- 
-  const [currentUser, setCurrentUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("currentUser")) || null;
-  });
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser")) || null
+  );
 
- 
-  const [products, setProducts] = useState(() => {
-    return JSON.parse(localStorage.getItem("products")) || [];
-  });
+  // =====================
+  // PRODUCTS & CATEGORIES
+  // =====================
+  const [products, setProducts] = useState(
+    JSON.parse(localStorage.getItem("products")) || []
+  );
 
-  const [categories, setCategories] = useState(() => {
-    return JSON.parse(localStorage.getItem("categories")) || [];
-  });
+  const [categories, setCategories] = useState(
+    JSON.parse(localStorage.getItem("categories")) || []
+  );
 
- 
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+  // =====================
+  // THEME TOGGLE FUNCTION
+  // =====================
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
 
-  
+  // 🔥 APPLY DARK MODE GLOBALLY (IMPORTANT FIX)
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
+  // =====================
+  // USERS CRUD
+  // =====================
   const addUser = (user) => {
-    const newUser = { ...user, id: uuidv4(), role: "user" }; 
+    const newUser = { ...user, id: uuidv4(), role: "user" };
     setUsers((prev) => [...prev, newUser]);
   };
 
@@ -56,7 +76,9 @@ export const GlobalProvider = ({ children }) => {
     setUsers((prev) => prev.filter((u) => u.id !== id));
   };
 
-  
+  // =====================
+  // PRODUCTS CRUD
+  // =====================
   const addProduct = (product) => {
     const newProduct = { ...product, id: uuidv4() };
     setProducts((prev) => [...prev, newProduct]);
@@ -72,7 +94,9 @@ export const GlobalProvider = ({ children }) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
- 
+  // =====================
+  // CATEGORIES CRUD
+  // =====================
   const addCategory = (category) => {
     const newCategory = { ...category, id: uuidv4() };
     setCategories((prev) => [...prev, newCategory]);
@@ -88,9 +112,13 @@ export const GlobalProvider = ({ children }) => {
     setCategories((prev) => prev.filter((c) => c.id !== id));
   };
 
-  
+  // =====================
+  // AUTH
+  // =====================
   const login = (email, password) => {
-    const user = users.find((u) => u.email === email && u.password === password);
+    const user = users.find(
+      (u) => u.email === email && u.password === password
+    );
     if (user) {
       setCurrentUser(user);
       return true;
@@ -98,31 +126,32 @@ export const GlobalProvider = ({ children }) => {
     return false;
   };
 
-  
   const register = (name, email, password) => {
-   
     if (users.some((u) => u.email === email)) return false;
 
-    
+    const role = email === "admin@ihuza.com" ? "admin" : "user";
+
     const newUser = {
       id: uuidv4(),
       name,
       email,
       password,
-      role: "user",
+      role,
       status: "Active",
     };
 
     setUsers((prev) => [...prev, newUser]);
-    return true; 
+    setCurrentUser(newUser);
+    return true;
   };
 
- 
   const logout = () => {
     setCurrentUser(null);
   };
 
- 
+  // =====================
+  // LOCAL STORAGE SYNC
+  // =====================
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
@@ -143,6 +172,9 @@ export const GlobalProvider = ({ children }) => {
     localStorage.setItem("categories", JSON.stringify(categories));
   }, [categories]);
 
+  // =====================
+  // CONTEXT PROVIDER
+  // =====================
   return (
     <GlobalContext.Provider
       value={{
