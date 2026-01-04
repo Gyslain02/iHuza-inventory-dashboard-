@@ -56,8 +56,8 @@ export default function Users() {
             className="p-2 border rounded-lg w-full dark:bg-gray-700 dark:border-gray-600"
           >
             <option>Admin</option>
-            <option>Manager</option>
-            <option>Staff</option>
+            <option>User</option>
+        
           </select>
           <select
             value={formData.status}

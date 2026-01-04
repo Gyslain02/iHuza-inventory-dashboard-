@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GlobalProvider } from "./context/GlobalContext";
+import { Toaster } from "react-hot-toast";
+
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
@@ -14,13 +16,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function App() {
   return (
     <GlobalProvider>
+      
+      <Toaster position="top-right" reverseOrder={false} />
+
       <Router>
         <Routes>
-          {/* Public */}
+         
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected */}
+        
           <Route
             path="/*"
             element={
